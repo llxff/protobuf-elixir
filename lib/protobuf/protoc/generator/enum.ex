@@ -5,10 +5,10 @@ defmodule Protobuf.Protoc.Generator.Enum do
     Enum.map(descs, fn desc -> generate(ctx, desc) end)
   end
 
-  def generate(%{namespace: ns, package: pkg} = ctx, desc) do
+  def generate(%{custom_namespace: cns, namespace: ns, package: pkg} = ctx, desc) do
     name = Util.trans_name(desc.name)
     fields = Enum.map(desc.value, fn f -> generate_field(f) end)
-    msg_name = Util.join_name(ns ++ [name]) |> Util.attach_pkg(pkg)
+    msg_name = ns ++ [name] |> Util.join_name() |> Util.attach_pkg(pkg) |> Util.attach_cns(cns)
     Protobuf.Protoc.Template.enum(msg_name, msg_opts(ctx), fields)
   end
 

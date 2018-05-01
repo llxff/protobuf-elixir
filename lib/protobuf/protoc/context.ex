@@ -14,5 +14,9 @@ defmodule Protobuf.Protoc.Context do
 
             # For a message
             # Nested namespace when generating nested messages. It should be joined to get the full namespace
-            namespace: []
+            namespace: [],
+
+            # For a message
+            # Add custom namespace for messages
+            custom_namespace: ""
 end

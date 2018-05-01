@@ -4,9 +4,7 @@ defmodule Protobuf.Protoc.Generator.EnumTest do
   alias Protobuf.Protoc.Context
   alias Protobuf.Protoc.Generator.Enum, as: Generator
 
-  test "generate/2 generates enum type messages" do
-    ctx = %Context{package: ""}
-
+  setup do
     desc = %Google.Protobuf.EnumDescriptorProto{
       name: "EnumFoo",
       options: nil,
@@ -16,8 +14,24 @@ defmodule Protobuf.Protoc.Generator.EnumTest do
       ]
     }
 
+    {:ok, desc: desc}
+  end
+
+  test "generate/2 generates enum type messages", %{desc: desc} do
+    ctx = %Context{package: ""}
+
     msg = Generator.generate(ctx, desc)
     assert msg =~ "defmodule EnumFoo do\n"
+    assert msg =~ "use Protobuf, enum: true\n"
+    refute msg =~ "defstruct "
+    assert msg =~ "field :A, 0\n  field :B, 1\n"
+  end
+
+  test "generate/2 generates enum type messages with custom namespace", %{desc: desc} do
+    ctx = %Context{package: "", custom_namespace: "My.Namespace"}
+
+    msg = Generator.generate(ctx, desc)
+    assert msg =~ "defmodule My.Namespace.EnumFoo do\n"
     assert msg =~ "use Protobuf, enum: true\n"
     refute msg =~ "defstruct "
     assert msg =~ "field :A, 0\n  field :B, 1\n"

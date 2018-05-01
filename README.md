@@ -104,6 +104,26 @@ If you write [services](https://developers.google.com/protocol-buffers/docs/prot
 $ protoc --elixir_out=plugins=grpc:./lib/ *.proto
 ```
 
+### Custom namespace support
+
+If you want to put generated Elixir modules under custom namespace, you can do it by passing `customns=My.Custom.Namespace` in --go_out:
+```
+$ protoc --elixir_out=customns=My.Custom.Namespace:./lib/ *.proto
+```
+
+```elixir
+defmodule My.Custom.Namespace.Helloworld.HelloRequest do
+  use Protobuf, syntax: :proto3
+
+  @type t :: %__MODULE__{
+    name: String.t
+  }
+  defstruct [:name]
+
+  field :name, 1, type: :string
+end
+```
+
 ### Tips for protoc
 
 - Custom protoc-gen-elixir name or path using `--plugin`

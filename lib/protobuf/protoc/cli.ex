@@ -30,6 +30,11 @@ defmodule Protobuf.Protoc.CLI do
     parse_params(ctx, t)
   end
 
+  def parse_params(ctx, ["customns=" <> cns | t]) do
+    ctx = %{ctx | custom_namespace: cns}
+    parse_params(ctx, t)
+  end
+
   def parse_params(ctx, _), do: ctx
 
   defp find_package_names(ctx, descs) do

@@ -24,3 +24,7 @@ protoc-gen-elixir
 # QuickCheck artifacts
 .eqc-info
 *.eqc
+
+# IntellJ IDEA files
+.idea/
+*.iml

@@ -27,6 +27,13 @@ defmodule Protobuf.Protoc.Generator.MessageTest do
     assert msg =~ "defmodule Pkg.Name.Foo do\n"
   end
 
+  test "generate/2 has right custom namespace" do
+    ctx = %Context{package: "pkg.name", custom_namespace: "My.Namespace"}
+    desc = Google.Protobuf.DescriptorProto.new(name: "Foo")
+    [msg] = Generator.generate(ctx, desc)
+    assert msg =~ "defmodule My.Namespace.Pkg.Name.Foo do\n"
+  end
+
   test "generate/2 has right options" do
     ctx = %Context{package: "pkg.name"}
 

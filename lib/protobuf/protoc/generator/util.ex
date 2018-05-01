@@ -15,6 +15,10 @@ defmodule Protobuf.Protoc.Generator.Util do
   def attach_raw_pkg(name, nil), do: name
   def attach_raw_pkg(name, pkg), do: pkg <> "." <> name
 
+  def attach_cns(name, nil), do: name
+  def attach_cns(name, ""), do: name
+  def attach_cns(name, cns), do: cns <> "." <> name
+
   def options_to_str(opts) do
     opts
     |> Enum.filter(fn {_, v} -> v end)
@@ -22,14 +26,16 @@ defmodule Protobuf.Protoc.Generator.Util do
     |> Enum.join(", ")
   end
 
-  def trans_type_name(name, ctx) do
+  def trans_type_name(name, %{custom_namespace: cns} = ctx) do
     case find_type_package(name, ctx) do
       "" ->
         name |> String.trim_leading(".") |> normalize_type_name
 
       found_pkg ->
         name = name |> String.trim_leading("." <> found_pkg <> ".") |> normalize_type_name
-        normalize_pkg_name(found_pkg) <> "." <> name
+        pkg_name = normalize_pkg_name(found_pkg) <> "." <> name
+
+        attach_cns(pkg_name, cns)
     end
   end
 

@@ -13,13 +13,13 @@ defmodule Protobuf.Protoc.Generator.Message do
     [gen_msg(ctx.syntax, msg_struct)] ++ gen_nested_msgs(ctx, desc) ++ gen_nested_enums(ctx, desc)
   end
 
-  def parse_desc(%{namespace: ns, package: pkg} = ctx, desc) do
+  def parse_desc(%{custom_namespace: cns, namespace: ns, package: pkg} = ctx, desc) do
     new_ns = ns ++ [Util.trans_name(desc.name)]
     fields = get_fields(ctx, desc)
 
     %{
       new_namespace: new_ns,
-      name: new_ns |> Util.join_name() |> Util.attach_pkg(pkg),
+      name: new_ns |> Util.join_name() |> Util.attach_pkg(pkg) |> Util.attach_cns(cns),
       options: msg_opts_str(ctx, desc.options),
       structs: structs_str(desc),
       typespec: typespec_str(fields, desc.oneof_decl),
